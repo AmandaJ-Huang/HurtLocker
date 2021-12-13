@@ -25,34 +25,38 @@ public class Main {
      * bread - ([Bb]...[Dd])([:;])([Pp]...[Ee]:)(([0-9]\.[0-9].)|)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*%@])(expiration:)([0-9]\/[0-9]+\/[0-9]...)([##$]+)
      * apples - ([Aa]....[Ss])([:;])([Pp]...[Ee]:)(([0-9]\.[0-9].)|)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*%@])(expiration:)([0-9]\/[0-9]+\/[0-9]...)([##$]+)
      * null values - (([Nn]..[Ee])([:;]{2})|([Pp]...[Ee])([:;]{2}))
-     * price - group(5)
-     * type - group(9)
-     * expiration - group(12)
+     * milk - 4/7/10
+     * cookies - 4/7/10
+     * bread - 4/7/10
+     * apples - 4/7/10
      **/
     public static void hurtLocker(String input) {
-        String milk = "([Nn]..[Ee]:)([Mm]..[Kk])([:;])([Pp]...[Ee]:)(([0-9]\\.[0-9].)|)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*])(expiration:)([0-9]\\/[0-9]+\\/[0-9]...)([##$]+)";
-        String cookies = "([Cc].....[Ss])([:;])([Pp]...[Ee]:)(([0-9]\\.[0-9].)|)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*%])(expiration:)([0-9]\\/[0-9]+\\/[0-9]...)([##$]+)";
-        String bread = "([Bb]...[Dd])([:;])([Pp]...[Ee]:)(([0-9]\\.[0-9].)|)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*%@])(expiration:)([0-9]\\/[0-9]+\\/[0-9]...)([##$]+)";
-        String apples = "([Aa]....[Ss])([:;])([Pp]...[Ee]:)(([0-9]\\.[0-9].)|)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*%@])(expiration:)([0-9]\\/[0-9]+\\/[0-9]...)([##$]+)";
+        String milk = "([Mm]..[Kk])([:;])([Pp]...[Ee]:)([0-9]\\.[0-9].)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*])(expiration:)([0-9]\\/[0-9]+\\/[0-9]...)([##$]+)";
+        String cookies = "([Cc].....[Ss])([:;])([Pp]...[Ee]:)([0-9]\\.[0-9].)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*%])(expiration:)([0-9]\\/[0-9]+\\/[0-9]...)([##$]+)";
+        String bread = "([Bb]...[Dd])([:;])([Pp]...[Ee]:)([0-9]\\.[0-9].)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*%@])(expiration:)([0-9]\\/[0-9]+\\/[0-9]...)([##$]+)";
+        String apples = "([Aa]....[Ss])([:;])([Pp]...[Ee]:)([0-9]\\.[0-9].)([:;])([Tt]..[Ee][:;])([Ff]..[Dd])([:;$^!*%@])(expiration:)([0-9]\\/[0-9]+\\/[0-9]...)([##$]+)";
         String errors = "(([Nn]..[Ee])([:;]{2})|([Pp]...[Ee])([:;]{2}))";
         String allPatterns = milk + "|" + cookies + "|" + bread + "|" + apples + "|" + errors;
-        Pattern milkPattern = Pattern.compile(milk);
-        Matcher milkMatcher = milkPattern.matcher(input);
+
+        Matcher milkMatcher = Pattern.compile(milk).matcher(input);
+        Matcher cookiesMatcher = Pattern.compile(cookies).matcher(input);
+        Matcher breadMatcher = Pattern.compile(bread).matcher(input);
+        Matcher applesMatcher = Pattern.compile(apples).matcher(input);
+        Matcher errorsMatcher = Pattern.compile(errors).matcher(input);
+        Matcher allMatcher = Pattern.compile(allPatterns).matcher(input);
 
         // hashmaps to hold food / price keys and occurrences
-        Map<String, List<Integer>> outerMap = new HashMap<>();
-        List<Integer> occurrences = new ArrayList<>();
+        Map<String, List<Integer>> groceryList = new HashMap<>();
 
         int counter = 0;
         // put values into hashmaps
-        while (milkMatcher.find()) {
-            counter++;
-
-            System.out.println("milk, " + counter
-                    + ", price: " + milkMatcher.group(5)
-                    + ", type: " + milkMatcher.group(9)
-                    + ", expiration: " + milkMatcher.group(12));
-
+        while (allMatcher.find()) {
+            while (applesMatcher.find()) {
+                System.out.println("apples, " + (counter++)
+                        + ", price: " + applesMatcher.group(4)
+                        + ", type: " + applesMatcher.group(7)
+                        + ", expiration: " + applesMatcher.group(10));
+            }
         }
 
         // write string to output-test file
