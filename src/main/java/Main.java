@@ -46,23 +46,53 @@ public class Main {
         Matcher allMatcher = Pattern.compile(allPatterns).matcher(input);
 
         // hashmaps to hold food / price keys and occurrences
-        Map<String, List<Integer>> groceryList = new HashMap<>();
+        String[] foods = new String[]{"Milk", "Cookies", "Bread", "Apples"};
+        Map<String, Map<String,Integer>> groceryList = new HashMap<>();
+        Map<String, Integer> milkCounter = new HashMap<>();
+        Map<String, Integer> cookieCounter = new HashMap<>();
+        Map<String, Integer> breadCounter = new HashMap<>();
+        Map<String, Integer> appleCounter = new HashMap<>();
+        Map<String, Integer> errorCounter = new HashMap<>();
 
-        int counter = 0;
+        groceryList.put("Milk", milkCounter);
+        groceryList.put("Cookies", cookieCounter);
+        groceryList.put("Bread", breadCounter);
+        groceryList.put("Apples", appleCounter);
+
+        String price = "";
+        String type = "";
+        String expiration = "";
         // put values into hashmaps
         while (allMatcher.find()) {
-            while (applesMatcher.find()) {
-                System.out.println("apples, " + (counter++)
-                        + ", price: " + applesMatcher.group(4)
-                        + ", type: " + applesMatcher.group(7)
-                        + ", expiration: " + applesMatcher.group(10));
+            while (milkMatcher.find()) {
+                price = milkMatcher.group(4);
+                type = milkMatcher.group(7);
+                expiration = milkMatcher.group(10);
+
+                if (!milkCounter.containsKey("milk")
+                || !milkCounter.containsKey(price)
+                || !milkCounter.containsKey(type)
+                || !milkCounter.containsKey(expiration)) {
+                    milkCounter.put("milk", 0);
+                    milkCounter.put(price, 0);
+                    milkCounter.put(type, 0);
+                    milkCounter.put(expiration, 0);
+                } else {
+                    milkCounter.replace("milk", (milkCounter.get("milk")+1));
+                    milkCounter.replace(price, (milkCounter.get(price)+1));
+                    milkCounter.replace(type, (milkCounter.get(type)+1));
+                    milkCounter.replace(expiration, (milkCounter.get(expiration)+1));
+                }
             }
         }
+
+        String milkOutput = String.format("%13s, %3s\t, %13s", "name:" + "Milk", "", "seen: " + milkCounter.get("milk") + " times") + "\n" +
+                "Price: " + milkCounter.get("3.23");
 
         // write string to output-test file
         try {
             FileWriter writer = new FileWriter("output-test.txt");
-            writer.write("");
+            writer.write(milkOutput);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
