@@ -9,18 +9,27 @@ import java.util.regex.Pattern;
 
 public class Main {
 
-    private Map<String, Integer> groceryMap = new HashMap<>();
+    private Map<String, Map<String, Integer>> outerMap = new HashMap<>();
+    private Map<String, Integer> innerMap = new HashMap<>();
 
     public String readRawDataToString() throws Exception{
         ClassLoader classLoader = getClass().getClassLoader();
-        String result = IOUtils.toString(classLoader.getResourceAsStream("RawData.txt"));
-        return result;
+        return IOUtils.toString(classLoader.getResourceAsStream("RawData.txt"));
     }
 
-    public static String hurtLocker(String input) {
+    public static void hurtLocker(String input) {
         Pattern delimiters = Pattern.compile("[:;^@%*]");
         Matcher dataMatcher = delimiters.matcher(input);
 
+        /** TODO: regex for all pattern types
+         * regex for each field: milk, bread, cookies, apples
+         * ex. m[...]k --> change to Milk
+         * regex for each key: name, price, type, expiration
+         * ex. n[...]e --> change to name
+         * foods may have multiple prices
+         * regex for expiration ending with ##$ - maybe?
+         * handle null values somehow...there is at least one for each key, except expiration...
+        **/
         String matched = dataMatcher.replaceAll("\n");
 
         try {
@@ -30,8 +39,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return "";
     }
 
     public static void main(String[] args) throws Exception{
