@@ -17,34 +17,39 @@ public class Main {
     }
 
     /** TODO: regex for all pattern types
-     * name = [nN].+[eE]:{1}([MmBbCcAa][a-zA-Z0-9]+[KkDdSs])[:;]|[nN].+[eE]:;
-     * price = [Pp][Rr].+[Ee][:;][0-9]\.[0-9]{2}
-     * type = [Tt].+[Ee][:;][Ff].+[Dd]
-     * expiration (groups date and ##) = ([0-9]+\/[0-9]+\/[0-9]+)([##$]+)
+     * all together now...
+     * name - (([nN].+[eE]:{1})([MmBbCcAa][a-zA-Z0-9]+[KkDdSs])([:;])|([nN].+[mM][eE])(:;))
+     * price - (([Pp][Rr].+[Cc][Ee])(:)([0-9]\.[0-9]{2})(;)|([Pp][Rr].+[Cc][Ee][:;]+))
+     * type - (([Tt].+[Ee][:;])([Ff].+[Dd])([;^:%*]))
+     * expiration - ((expiration)(:)([0-9]+\/[0-9]+\/[0-9]+)([##$]+))
      **/
     public static void hurtLocker(String input) {
-        Pattern name = Pattern.compile("");
-        Pattern price = Pattern.compile("");
-        Pattern type = Pattern.compile("");
-        Pattern expiration = Pattern.compile("");
-        Matcher dataMatcher = name.matcher(input);
-        String input1 = dataMatcher.replaceAll("\n");
+        String namePattern = "(([nN].+[eE]:{1})([MmBbCcAa][a-zA-Z0-9]+[KkDdSs])([:;])|([nN].+[mM][eE])(:;))";
+        String pricePattern = "(([Pp][Rr].+[Cc][Ee])(:)([0-9]\\.[0-9]{2})(;)|([Pp][Rr].+[Cc][Ee][:;]+))";
+        String typePattern = "(([Tt].+[Ee][:;])([Ff].+[Dd])([;^:%*]))";
+        String expirationPattern = "((expiration)(:)([0-9]+\\/[0-9]+\\/[0-9]+)([##$]+))";
+        String allTogether = namePattern + pricePattern + typePattern + expirationPattern;
 
-        // food and price patterns
-
+        Pattern fullPattern = Pattern.compile(allTogether);
+        Matcher dataMatcher = fullPattern.matcher(input);
 
         // hashmaps to hold food / price keys and occurrences
         Map<String, Map<String, Integer>> outerMap = new HashMap<>();
-        Map<String, Integer> innerMap = new HashMap<>();
+        Map<Matcher, Integer> innerMap = new HashMap<>();
         Map<String, Integer> outerKeySeen = new HashMap<>();
+
+        Matcher name = Pattern.compile(namePattern).matcher(input);
 
 
         // put values into hashmaps
+        while (name.find()) {
+            System.out.println(name.group(1) + "\n");
+        }
 
         // write string to output-test file
         try {
             FileWriter writer = new FileWriter("output-test.txt");
-            writer.write(input1);
+            writer.write(innerMap.toString());
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
